@@ -1,5 +1,5 @@
 import React from 'react';
-import { EligibilityStatus } from '@/lib/schemes';
+import { EligibilityStatus } from '@/types/scheme';
 
 interface EligibilityBadgeProps {
   status: EligibilityStatus;
@@ -11,11 +11,11 @@ export function EligibilityBadge({ status, label, className = '' }: EligibilityB
   if (status === 'pass') {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#ecfdf5] text-[#065f46] border border-[#a7f3d0] ${className}`}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-tertiary-container text-tertiary-fixed border border-on-tertiary-container/30 ${className}`}
         aria-label={`Criterion met: ${label || 'Meets checked criteria'}`}
       >
         <svg
-          className="w-3.5 h-3.5 flex-shrink-0 text-[#065f46]"
+          className="w-3.5 h-3.5 shrink-0 text-tertiary-fixed"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -31,11 +31,11 @@ export function EligibilityBadge({ status, label, className = '' }: EligibilityB
   if (status === 'fail') {
     return (
       <span
-        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#fef2f2] text-[#991b1b] border border-[#fecaca] ${className}`}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-error-container text-on-error-container border border-error/30 ${className}`}
         aria-label={`Criterion not met: ${label || 'Does not match checked criterion'}`}
       >
         <svg
-          className="w-3.5 h-3.5 flex-shrink-0 text-[#991b1b]"
+          className="w-3.5 h-3.5 shrink-0 text-on-error-container"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -50,11 +50,11 @@ export function EligibilityBadge({ status, label, className = '' }: EligibilityB
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#fef3c7] text-[#92400e] border border-[#fde68a] ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-secondary-fixed text-on-secondary-fixed border border-secondary-fixed-dim ${className}`}
       aria-label={`Criterion requires more information: ${label || 'More information needed'}`}
     >
       <svg
-        className="w-3.5 h-3.5 flex-shrink-0 text-[#92400e]"
+        className="w-3.5 h-3.5 shrink-0 text-on-secondary-fixed"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

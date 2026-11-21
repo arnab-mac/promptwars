@@ -1,21 +1,22 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { SCHEMES } from '@/lib/schemes';
+import { getSchemeById, getAllSchemes } from '@/services/scheme-service';
 
 interface SchemeDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
 export async function generateStaticParams() {
-  return SCHEMES.map((scheme) => ({
+  const schemes = await getAllSchemes();
+  return schemes.map((scheme) => ({
     id: scheme.id,
   }));
 }
 
 export default async function SchemeDetailPage({ params }: SchemeDetailPageProps) {
   const { id } = await params;
-  const scheme = SCHEMES.find((s) => s.id === id);
+  const scheme = await getSchemeById(id);
 
   if (!scheme) {
     notFound();
@@ -127,7 +128,7 @@ export default async function SchemeDetailPage({ params }: SchemeDetailPageProps
 
               <Link
                 href="/wizard"
-                className="w-full h-12 bg-secondary-container hover:bg-secondary text-on-primary font-label-lg text-label-lg font-bold rounded-lg flex items-center justify-center gap-space-sm shadow-md transition-all"
+                className="w-full h-12 bg-secondary hover:bg-secondary-container text-on-secondary font-label-lg text-label-lg font-bold rounded-lg flex items-center justify-center gap-space-sm shadow-md transition-all"
               >
                 <span className="material-symbols-outlined text-lg">fingerprint</span>
                 <span>Check Your Eligibility</span>
@@ -256,7 +257,7 @@ export default async function SchemeDetailPage({ params }: SchemeDetailPageProps
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-label-lg text-label-lg font-bold text-primary flex items-center gap-2">
-                        <span className="material-symbols-outlined text-base text-tertiary-container">check_circle</span>
+                        <span className="material-symbols-outlined text-base text-on-tertiary-container">check_circle</span>
                         <span>{cond.label}</span>
                       </span>
                       <span className="font-label-md text-label-md font-mono text-outline">Check ID: {cond.id}</span>
@@ -264,7 +265,7 @@ export default async function SchemeDetailPage({ params }: SchemeDetailPageProps
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-body-sm text-body-sm pt-2 border-t border-surface-container">
                       <div className="bg-surface-container-lowest p-3 rounded-lg border border-surface-container">
-                        <strong className="text-tertiary-container font-label-md text-label-md block mb-1">
+                        <strong className="text-on-tertiary-container font-label-md text-label-md block mb-1">
                           ✓ Condition Pass Rule:
                         </strong>
                         <span className="text-on-surface-variant">{cond.passReason}</span>
@@ -323,7 +324,7 @@ export default async function SchemeDetailPage({ params }: SchemeDetailPageProps
                 <ul className="space-y-2.5 font-body-sm text-body-sm text-on-surface">
                   {scheme.documentsRequired.map((doc, idx) => (
                     <li key={idx} className="flex items-start gap-2 p-2 rounded-lg bg-surface-container-low border border-surface-container">
-                      <span className="material-symbols-outlined text-base text-tertiary-container shrink-0 mt-0.5">
+                      <span className="material-symbols-outlined text-base text-on-tertiary-container shrink-0 mt-0.5">
                         verified
                       </span>
                       <span>{doc}</span>

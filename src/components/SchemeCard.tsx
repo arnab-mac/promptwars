@@ -16,14 +16,14 @@ export function SchemeCard({ result, onAskScheme }: SchemeCardProps) {
 
   const cardBorderClass =
     overallMatch === 'matches-checked-criteria'
-      ? 'border-l-4 border-l-[#00897b]'
+      ? 'border-l-4 border-l-tertiary-container'
       : overallMatch === 'more-info-needed'
-      ? 'border-l-4 border-l-[#a83900]'
-      : 'border-l-4 border-l-slate-300';
+      ? 'border-l-4 border-l-secondary'
+      : 'border-l-4 border-l-outline-variant';
 
   return (
     <article
-      className={`bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all ${cardBorderClass} overflow-hidden`}
+      className={`bg-surface-container-lowest rounded-2xl border border-surface-container shadow-sm hover:shadow-md transition-all ${cardBorderClass} overflow-hidden`}
     >
       <div className="p-6 sm:p-7">
         {/* Top Meta Bar */}
@@ -32,13 +32,13 @@ export function SchemeCard({ result, onAskScheme }: SchemeCardProps) {
             <span
               className={`px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider ${
                 scheme.scope === 'central'
-                  ? 'bg-[#001428] text-white'
-                  : 'bg-[#e6eeff] text-[#001428] border border-[#d5e3fd]'
+                  ? 'bg-primary text-on-primary'
+                  : 'bg-surface-container text-primary border border-surface-container-highest'
               }`}
             >
               {scheme.scope === 'central' ? 'Central Sector Scheme' : `State: ${scheme.stateCode || 'Regional'}`}
             </span>
-            <span className="text-xs text-slate-500 font-semibold truncate max-w-[240px] sm:max-w-md">
+            <span className="text-xs text-on-surface-variant font-semibold truncate max-w-[240px] sm:max-w-md">
               {scheme.department}
             </span>
           </div>
@@ -58,101 +58,89 @@ export function SchemeCard({ result, onAskScheme }: SchemeCardProps) {
         {/* Title & Monetary Benefit Callout */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
           <div className="flex-1">
-            <h3 className="text-lg sm:text-xl font-bold text-[#001428] leading-tight">
-              <Link
-                href={`/schemes/${scheme.id}`}
-                className="hover:text-[#a83900] transition-colors focus:ring-2 focus:ring-[#fc6018] rounded"
-              >
-                {scheme.name}
-              </Link>
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+            <Link
+              href={`/schemes/${scheme.id}`}
+              className="text-lg sm:text-xl font-bold text-primary hover:text-secondary transition-colors"
+            >
+              {scheme.name}
+            </Link>
+            <p className="text-xs sm:text-sm text-on-surface-variant mt-1.5 leading-relaxed">
               {scheme.benefitSummary}
             </p>
           </div>
 
           {scheme.benefitAmount && (
-            <div className="flex-shrink-0 bg-[#e6f4ea] border border-[#a7f3d0] rounded-xl p-3 sm:p-3.5 text-right sm:min-w-[190px]">
-              <span className="block text-[10px] font-bold uppercase tracking-wider text-[#065f46]">
-                Direct Benefit Transfer
+            <div className="bg-surface-container-low px-4 py-2.5 rounded-xl border border-surface-container-highest text-right shrink-0">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant block">
+                Primary Benefit
               </span>
-              <span className="block text-base sm:text-lg font-extrabold text-[#065f46] tabular-nums mt-0.5 font-mono">
+              <span className="font-tabular-amount text-sm sm:text-base font-extrabold text-secondary">
                 {scheme.benefitAmount}
               </span>
             </div>
           )}
         </div>
 
-        {/* Criteria Tags / Pills from Stitch */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {scheme.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs bg-[#f8f9ff] text-slate-700 font-medium px-2.5 py-0.5 rounded-full border border-slate-200"
-            >
-              #{tag}
+        {/* Condition Chips */}
+        <div className="flex flex-wrap items-center gap-2 py-3 border-t border-b border-surface-container my-3">
+          <span className="text-xs font-bold text-on-surface mr-1">Evaluated Conditions:</span>
+
+          {passCount > 0 && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tertiary-container/10 text-tertiary border border-tertiary-container/30">
+              <span className="material-symbols-outlined text-xs">check</span>
+              <span>{passCount} Satisfied</span>
             </span>
-          ))}
+          )}
+
+          {failCount > 0 && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-error-container text-on-error-container border border-error/20">
+              <span className="material-symbols-outlined text-xs">close</span>
+              <span>{failCount} Unmet</span>
+            </span>
+          )}
+
+          {unknownCount > 0 && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-fixed/50 text-on-secondary-fixed border border-secondary/20">
+              <span className="material-symbols-outlined text-xs">help_outline</span>
+              <span>{unknownCount} Missing info</span>
+            </span>
+          )}
         </div>
 
-        {/* Condition Summary Counts */}
-        <div className="bg-[#f8f9ff] border border-slate-200 rounded-xl p-3 text-xs flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-4 text-slate-700">
-            <span className="inline-flex items-center gap-1">
-              <strong className="text-[#065f46] font-bold">{passCount}</strong> met
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <strong className="text-[#991b1b] font-bold">{failCount}</strong> unmet
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <strong className="text-[#a83900] font-bold">{unknownCount}</strong> needing info
-            </span>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setExpanded(!expanded)}
-            aria-expanded={expanded}
-            className="text-xs font-bold text-[#001428] hover:text-[#a83900] flex items-center gap-1 focus:ring-2 focus:ring-[#fc6018] rounded px-1.5 py-0.5"
-          >
-            <span>{expanded ? 'Hide rule criteria' : 'View verified criteria'}</span>
-            <span
-              className={`material-symbols-outlined text-base transition-transform ${
-                expanded ? 'rotate-180' : ''
-              }`}
-            >
-              expand_more
-            </span>
-          </button>
-        </div>
-
-        {/* Expandable Criteria Breakdown */}
+        {/* Expandable Breakdown Drawer */}
         {expanded && (
-          <div className="mt-4 pt-4 border-t border-slate-200 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Evaluated Rule Criteria:
+          <div className="mt-4 pt-3 space-y-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface">
+              Detailed Rule Assessment
             </h4>
-            <div className="space-y-2">
+            <ul className="space-y-2">
               {conditionResults.map((c) => (
-                <div
-                  key={c.conditionId}
-                  className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
-                >
-                  <div className="flex-1">
-                    <span className="font-bold text-slate-900 block">{c.label}</span>
-                    <span className="text-slate-500 block mt-0.5">{c.reason}</span>
+                <li key={c.conditionId} className="flex items-start gap-2 text-xs">
+                  <span
+                    className={`material-symbols-outlined text-sm mt-0.5 shrink-0 ${
+                      c.status === 'pass'
+                        ? 'text-tertiary'
+                        : c.status === 'fail'
+                        ? 'text-error'
+                        : 'text-secondary'
+                    }`}
+                  >
+                    {c.status === 'pass' ? 'check_circle' : c.status === 'fail' ? 'cancel' : 'help'}
+                  </span>
+                  <div>
+                    <span className="font-bold text-on-surface">{c.label}: </span>
+                    <span className="text-on-surface-variant">{c.reason}</span>
                   </div>
-                  <EligibilityBadge status={c.status} />
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
 
             {scheme.uncheckedRequirements && scheme.uncheckedRequirements.length > 0 && (
-              <div className="mt-3 p-3 bg-amber-50/80 border border-amber-200 rounded-xl text-xs text-amber-900">
-                <span className="font-bold block mb-1">
-                  ⚠️ Unchecked Departmental Requirements (Confirm before applying):
+              <div className="pt-2 border-t border-surface-container-highest">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-secondary block mb-1">
+                  Additional Unchecked Requirements (Verify on Official Portal)
                 </span>
-                <ul className="list-disc list-inside space-y-0.5 text-amber-800">
+                <ul className="list-disc list-inside text-xs text-on-surface-variant space-y-1">
                   {scheme.uncheckedRequirements.map((req, idx) => (
                     <li key={idx}>{req}</li>
                   ))}
@@ -162,37 +150,39 @@ export function SchemeCard({ result, onAskScheme }: SchemeCardProps) {
           </div>
         )}
 
-        {/* Card Action Footer */}
-        <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/schemes/${scheme.id}`}
-              className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold rounded-xl bg-[#001428] text-white hover:bg-[#0f2942] transition-colors focus:ring-2 focus:ring-[#fc6018]"
-            >
-              Scheme Guidelines &amp; Next Steps
-            </Link>
+        {/* Card Actions */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 mt-1">
+          <button
+            type="button"
+            onClick={() => setExpanded(!expanded)}
+            className="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1 transition-colors"
+          >
+            <span>{expanded ? 'Hide condition breakdown' : 'Show full criteria breakdown'}</span>
+            <span className="material-symbols-outlined text-sm">
+              {expanded ? 'expand_less' : 'expand_more'}
+            </span>
+          </button>
 
+          <div className="flex items-center gap-2">
             {onAskScheme && (
               <button
                 type="button"
                 onClick={() => onAskScheme(scheme.name)}
-                className="inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl bg-white text-[#001428] border border-slate-300 hover:bg-slate-50 transition-colors focus:ring-2 focus:ring-[#fc6018]"
+                className="px-3 py-1.5 rounded-lg border border-surface-container-highest text-xs font-semibold text-primary hover:bg-surface-container-low transition-colors flex items-center gap-1"
               >
-                <span className="material-symbols-outlined text-sm text-[#00897b]">smart_toy</span>
-                <span>Ask Assistant</span>
+                <span className="material-symbols-outlined text-sm text-secondary">psychology_alt</span>
+                <span>Ask AI</span>
               </button>
             )}
-          </div>
 
-          <a
-            href={scheme.officialUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-bold text-slate-600 hover:text-[#001428] inline-flex items-center gap-1 focus:ring-2 focus:ring-[#fc6018] rounded"
-          >
-            <span>Official Ministry Portal</span>
-            <span className="material-symbols-outlined text-sm">open_in_new</span>
-          </a>
+            <Link
+              href={`/schemes/${scheme.id}`}
+              className="px-4 py-1.5 rounded-lg bg-primary hover:bg-primary-container text-on-primary text-xs font-bold shadow-sm transition-all flex items-center gap-1"
+            >
+              <span>View Details</span>
+              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            </Link>
+          </div>
         </div>
       </div>
     </article>

@@ -83,7 +83,7 @@ export default function SecurityPrivacyCenter() {
                 </h2>
               </div>
               <p className="text-sm text-slate-500 mt-1">
-                Type or test sample national identity tokens below. Watch SchemeSaathi's real-time client & server interception shield redact them before transmission.
+                Type or test sample national identity tokens below. Watch SchemeSaathi&apos;s real-time client &amp; server interception shield redact them before transmission.
               </p>
             </div>
             <span className="hidden sm:inline-flex px-3 py-1 text-xs font-bold bg-indigo-100 text-indigo-800 rounded-full">

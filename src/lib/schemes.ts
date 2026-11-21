@@ -138,7 +138,7 @@ export const SCHEMES: Scheme[] = [
         id: 'pmay-g-homeless',
         label: 'Must be homeless or living in a kutcha (mud/thatch) or one-room house',
         checkKey: null,
-        evaluate: (_p) => 'unknown',
+        evaluate: () => 'unknown',
         failReason: 'You have adequate housing.',
         unknownReason: 'Current housing condition cannot be assessed from the profile.',
         passReason: 'You are recorded as homeless or living in inadequate housing.',
