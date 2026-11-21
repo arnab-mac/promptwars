@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "npx tsc __tests__/eligibility-engine.test.ts --target es2022 --module nodenext --moduleResolution nodenext --outDir /tmp/test-out && node --test /tmp/test-out/__tests__/eligibility-engine.test.js"
   },
   "dependencies": {
     "next": "16.4.6",
