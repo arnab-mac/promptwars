@@ -131,6 +131,13 @@ export default function RootLayout({
                 >
                   About &amp; Verification
                 </Link>
+                <Link
+                  href="/security"
+                  className="px-3 py-2 rounded-lg font-label-lg text-label-lg text-emerald-800 bg-emerald-50 hover:bg-emerald-100 transition-colors flex items-center gap-1 font-semibold"
+                >
+                  <span className="material-symbols-outlined text-sm text-emerald-600">verified_user</span>
+                  <span>Security</span>
+                </Link>
               </nav>
             </div>
 
@@ -241,6 +248,12 @@ export default function RootLayout({
                     <Link href="/about" className="hover:text-on-primary transition-colors flex items-center gap-1">
                       <span className="material-symbols-outlined text-xs">chevron_right</span>
                       Rule Verification &amp; Privacy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/security" className="hover:text-on-primary transition-colors flex items-center gap-1 text-emerald-300">
+                      <span className="material-symbols-outlined text-xs">verified_user</span>
+                      Security &amp; Zero-Knowledge Shield
                     </Link>
                   </li>
                 </ul>

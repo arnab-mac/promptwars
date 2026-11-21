@@ -126,7 +126,7 @@ NVIDIA_MODEL=meta/llama-3.3-70b-instruct
 
 ## 7. Running Automated Tests
 
-Run the full automated test suite verifying deterministic rule evaluations, boundary conditions, and state resets:
+Run the full automated test suite verifying deterministic rule evaluations, boundary conditions, state resets, PII redactions, prompt injection defenses, and rate limiting:
 
 ```bash
 npm test
@@ -134,7 +134,7 @@ npm test
 
 Expected output:
 ```
-✔ SchemeSaathi Decision Engine Tests
+▶ SchemeSaathi Decision Engine Tests
   ✔ 1. PM-KISAN: eligible farmer with land holding and low income passes
   ✔ 2. PM-KISAN: high-income person (> ₹10L/year) fails exclusion criterion
   ✔ 3. Missing answers result in "more-info-needed", never assumed false
@@ -143,8 +143,21 @@ Expected output:
   ✔ 6. NSAP Senior Citizen Pension: exact boundary age 60 passes
   ✔ 7. Empty or Reset profile marks all conditional schemes as more-info-needed
   ✔ 8. Sorting: getTopMatches orders matches first, then more-info-needed
-ℹ tests 8
-ℹ pass 8
+✔ SchemeSaathi Decision Engine Tests
+
+▶ SchemeSaathi Civic Security Shield Tests
+  ✔ 1. Aadhaar: 12-digit number with spaces is detected and redacted
+  ✔ 2. PAN: 10-char alphanumeric tax identity is detected and redacted
+  ✔ 3. Banking details: Bank account number and IFSC are redacted
+  ✔ 4. Contact tokens: Mobile number is redacted
+  ✔ 5. Non-sensitive civic inputs pass through without false positive redactions
+  ✔ 6. Prompt Injection: "ignore previous instructions" is blocked
+  ✔ 7. Prompt Injection: "you are now in developer mode / DAN" is blocked
+  ✔ 8. Rate Limiter: Allows normal usage up to maxRequests, then blocks with retry window
+  ✔ 9. Input Sanitizer: Strips HTML script tags and control characters
+✔ SchemeSaathi Civic Security Shield Tests
+ℹ tests 19
+ℹ pass 19
 ```
 
 ---
@@ -158,9 +171,14 @@ Expected output:
 
 ---
 
-## 9. Security & Civic Privacy Safeguards
+## 9. Security & Civic Privacy Safeguards (Zero-Knowledge Architecture)
 
-- **Zero PII Collection:** No Aadhaar numbers, PAN cards, bank account digits, or telephone numbers are ever requested.
-- **No Database Persistence:** User demographics are transferred via ephemeral URL query parameters during the session and are completely purged when the user clicks "Reset".
-- **Server-Side Credentials:** All AI API credentials stay strictly server-side in Next.js Route Handlers.
-- **Accessible & Transparent:** Meets WCAG standards with text-backed status indicators (never relying on color alone), high-contrast palettes, and full keyboard navigation.
+SchemeSaathi incorporates an enterprise-grade civic security system (accessible live at `/security`):
+
+1. **Client & Server PII Redaction (`lib/security.ts`):** Real-time regex detection and token masking for Aadhaar (12-digit), PAN, Bank Account numbers, IFSC codes, and mobile numbers before any payload reaches AI models or server logs.
+2. **Adversarial Prompt & Jailbreak Defense:** Rejects instruction overrides ("ignore previous rules", "you are now in developer mode") and prevents any user prompt from forcing scheme approval verdicts.
+3. **Sliding-Window Rate Limiting:** 20 requests per minute per IP token bucket on `/api/chat` with HTTP 429 and `Retry-After` enforcement.
+4. **Content Security Policy (CSP) & Security Headers:** `next.config.ts` enforces `default-src 'self'`, strict font/image origins, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and `Permissions-Policy`.
+5. **No Database Persistence:** User demographics are transferred via ephemeral URL query parameters during the session and are completely purged when the user clicks "Reset".
+6. **Server-Side Credentials:** All AI API credentials stay strictly server-side in Next.js Route Handlers and `.env.local` is strictly excluded from Git.
+7. **Interactive Security Center (`/security`):** Live sandbox testbeds where evaluators can test entering sample Aadhaar/PAN/Bank tokens and prompt injection attacks in real time.
